@@ -5,3 +5,6 @@ class Item(BaseModel):
     name: str
     description: Optional[str] = None
     status: bool
+
+class Id(BaseModel):
+    id: int

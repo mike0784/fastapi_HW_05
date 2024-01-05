@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
-from .item import Item
+from .item import Item, Id
 
 from . import model
 from .database import SessionLocal, engine
@@ -34,7 +34,7 @@ async def view_items(db: Session = Depends(get_db)):
     return db.query(model.Task).all()
 
 @app.get("/tasks/{id}/")
-async def view_item(id: int, db: Session = Depends(get_db)):
+async def view_item(id: Id, db: Session = Depends(get_db)):
     return db.query(model.Task).filter(model.Task.id == id).first()
 
 @app.post("/tasks/")
@@ -45,7 +45,7 @@ async def create_item(item: Item, db: Session = Depends(get_db)):
     return {"message": "Task append successfully"}
 
 @app.put("/tasks/{id}/")
-async def update_item(id: int, item: Item, db: Session = Depends(get_db)):
+async def update_item(id: Id, item: Item, db: Session = Depends(get_db)):
     db_task = db.query(model.Task).filter(model.Task.id == id).first()
     db_task.name = item.name
     db_task.description = item.description
@@ -54,7 +54,7 @@ async def update_item(id: int, item: Item, db: Session = Depends(get_db)):
     return {"message": "Task update successfully"}
 
 @app.delete("/tasks/{id}/")
-async def delete_item(id: int, db: Session = Depends(get_db)):
+async def delete_item(id: Id, db: Session = Depends(get_db)):
     db_item = db.query(model.Task).filter(model.Task.id == id).first()
     db.delete(db_item)
     db.commit()
